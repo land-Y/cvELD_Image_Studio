@@ -1,0 +1,22 @@
+{
+  "mode": "generate",
+  "prompt": "可愛いポップな漫画イラスト。屋外カフェのテーブルで、丸くデフォルメされた鳩がソーダの紙コップを片足で踏み、ピンク色のソーダが噴水のように真上へ噴き出した瞬間。鳩はのけぞり、両翼を大きく広げ、頭には外れたコップの蓋が帽子のように載っている。大きく見開いた目、赤い頬、周囲に水滴と驚きの線。画面の左手前に、この失敗を撮影するスマートフォンと人の手。白いSNS投稿カードの枠と、下部にハートとコメントのアイコン。明るいミントグリーンとピンク、太い輪郭、躍動感のある一コマ。",
+  "negative_prompt": "",
+  "width": 1024,
+  "height": 1024,
+  "steps": 40,
+  "cfg": 1.0,
+  "seed": 37392343,
+  "count": 1,
+  "batch_size": 1,
+  "sampler": "euler",
+  "transparent": false,
+  "references": [],
+  "mask_id": null,
+  "preserve_outside": true,
+  "mask_feather": 0,
+  "reference_resolution": 768,
+  "profile": "balanced",
+  "use_kv_cache": true,
+  "cache_text": true
+}

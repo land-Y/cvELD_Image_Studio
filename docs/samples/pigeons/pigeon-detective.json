@@ -1,0 +1,22 @@
+{
+  "mode": "generate",
+  "prompt": "可愛いポップな漫画イラスト。小さな探偵帽と茶色いケープを着た丸い鳩が、虫眼鏡を持ち、公園の石畳に落ちたパンくずの列を真剣に調べている。パンくずの列は鳩自身の足元まで続き、鳩のくちばしには大きなパンのかけらがくっついている。犯人が自分だと気づいていない得意げな表情。右手前に、鳩の間抜けな姿をスマートフォンで撮影する人の手。鳩の全身、虫眼鏡、パンくずの道が一枚で分かる少し引いた構図。全体をSNS投稿カードで囲み、下部にハートと吹き出しのアイコン。太い輪郭線、鮮やかな黄色とターコイズ、ユーモラスな絵本風。",
+  "negative_prompt": "",
+  "width": 1024,
+  "height": 1024,
+  "steps": 40,
+  "cfg": 1.0,
+  "seed": 37392343,
+  "count": 1,
+  "batch_size": 1,
+  "sampler": "euler",
+  "transparent": false,
+  "references": [],
+  "mask_id": null,
+  "preserve_outside": true,
+  "mask_feather": 0,
+  "reference_resolution": 768,
+  "profile": "balanced",
+  "use_kv_cache": true,
+  "cache_text": true
+}

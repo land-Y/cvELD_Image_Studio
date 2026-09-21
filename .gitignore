@@ -1,0 +1,14 @@
+.venv/
+.runtime/
+models/
+data/
+logs/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+test-results/
+playwright-report/
+.env
+.env.*
+*.log
+*.zip

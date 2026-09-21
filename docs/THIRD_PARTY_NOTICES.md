@@ -1,0 +1,11 @@
+# ライセンスの区別
+
+本ZIPには公式モデル重み・Python本体・第三者パッケージのバイナリ・フォントを同梱していません。独自WebUI部分はルートのMIT LICENSEに従います。
+
+Qwen-Image-2.1モデルは **Qwen Research License Agreement** に従います。WebUIのMITやDiffusers実装コードのApacheライセンスを、モデル重みの利用条件へ拡張して解釈しないでください。商用利用は別途許諾の確認が必要です。セットアップが固定モデル版のLICENSEを取得して表示します。モデル名は対応対象を説明するための表示で、公式提携や認定を意味しません。
+
+依存するDiffusers、Transformers、PyTorch、torchvision、uv、Python、FastAPI、Uvicorn、Pillow、その他パッケージには各配布物のライセンスが適用されます。これらの原文はインストールした配布物または公式プロジェクトで確認してください。依存コードそのものを再配布する場合は、それぞれの条件とNOTICE等を改めて確認してください。
+
+Microsoft Visual C++ランタイムにはMicrosoftの条件が適用されます。アプリは未導入時にMicrosoft公式配布先からダウンロードして署名を確認し、正規インストーラーを起動します。
+
+参照先は同梱SOURCES.mdに記載しています。商標・モデル・第三者ライブラリの権利を、このZIPの作者が付与するものではありません。

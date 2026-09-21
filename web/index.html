@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="studio-token" content="__STUDIO_TOKEN__">
+<title>cvELD Image Studio</title>
+<link rel="stylesheet" href="/assets/style.css?v=0.2.0">
+<script src="/assets/app.js?v=0.2.0" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">cv</span><div><strong>cvELD <span>Image Studio</span></strong><small>LOCAL IMAGE WORKSPACE</small></div></div>
+  <div class="top-actions"><span class="badge"><i></i> ローカル専用</span><span class="badge model">Qwen-Image-2.1</span><a href="/manual" target="_blank" rel="noopener">マニュアル ↗</a></div>
+</header>
+<main>
+<section class="controls" aria-label="生成設定">
+  <div class="mode-tabs" role="tablist" aria-label="作業モード">
+    <button class="selected" data-mode="generate" role="tab" aria-selected="true">✦ 生成</button>
+    <button data-mode="edit" role="tab" aria-selected="false">▧ 画像編集</button>
+    <button data-mode="local" role="tab" aria-selected="false">◌ 部分編集</button>
+  </div>
+  <label class="field-title" for="prompt">プロンプト <span>日本語 / English</span></label>
+  <textarea id="prompt" rows="6" maxlength="4096" placeholder="どんな画像をつくりますか？ 被写体、色、素材、構図、光を具体的に書いてください。"></textarea>
+  <div class="prompt-row"><select id="example" aria-label="プロンプトの例"><option value="">プロンプトの例を選ぶ</option><option value="pigeon-toast">鳩：食パンにはまる / Toast mishap</option><option value="pigeon-soda">鳩：ソーダ大噴射 / Soda surprise</option><option value="pigeon-detective">鳩：犯人は自分 / Clumsy detective</option><option value="product">製品ビジュアル</option><option value="icon">透過アイコン</option><option value="recolor">衣装の色変更</option><option value="graphic">説明入りグラフィック</option></select><span id="prompt-count">0 / 4096</span></div>
+  <label class="negative-field">ネガティブプロンプト<textarea id="negative-prompt" maxlength="2048" rows="2" placeholder="避けたい要素を入力。CFGを1より大きくすると反映されます。" aria-describedby="cfg-hint"></textarea></label>
+  <section id="reference-section" hidden>
+    <div class="field-title">参照画像 <span id="reference-count">0 / 10</span></div>
+    <div id="dropzone" tabindex="0" role="button" aria-label="参照画像を追加">＋ 画像をドロップ / クリックして追加<small>PNG・JPEG・WebP・BMP / 1枚32 MiBまで</small></div>
+    <input id="file-input" type="file" accept="image/png,image/jpeg,image/webp,image/bmp" multiple hidden>
+    <div id="references" class="references"></div>
+    <p class="hint">左から画像1、画像2…として渡します。矢印で順序を変更できます。</p>
+  </section>
+  <section id="mask-options" hidden>
+    <label class="check"><input type="checkbox" id="preserve-outside" checked><span>マスク外は元画像を保持して保存</span></label>
+    <p class="hint">右のキャンバスに白く塗って指定します。保持をONにすると最終PNGは元画像のピクセル寸法になります。</p>
+    <label class="field-title" for="mask-feather">境界のぼかし <span><output id="feather-value">0</output> px</span></label>
+    <input type="range" id="mask-feather" min="0" max="64" value="0">
+  </section>
+  <div class="separator"></div>
+  <div class="field-title">出力サイズ <span>幅・高さは32の倍数</span></div>
+  <select id="size-preset" aria-label="出力サイズプリセット">
+    <option value="1024,1024">1:1 ─ 1024 × 1024 / 標準</option>
+    <option value="768,768">1:1 ─ 768 × 768 / 編集の初回確認</option>
+    <option value="512,512">1:1 ─ 512 × 512 / 軽量チェック</option>
+    <option value="1344,768">横長 ─ 1344 × 768</option>
+    <option value="768,1344">縦長 ─ 768 × 1344</option>
+    <option value="2048,2048">1:1 ─ 2048 × 2048 / 高解像度</option>
+    <option value="2752,1536">16:9 ─ 2752 × 1536 / 高解像度</option>
+    <option value="1536,2752">9:16 ─ 1536 × 2752 / 高解像度</option>
+    <option value="custom">カスタム</option>
+  </select>
+  <div class="pair dimensions"><label>幅<input id="width" type="number" min="256" max="4096" step="32" value="1024"></label><button id="swap-size" type="button" title="幅と高さを入れ替える / Swap width and height" aria-label="幅と高さを入れ替える">⇄</button><label>高さ<input id="height" type="number" min="256" max="4096" step="32" value="1024"></label></div>
+  <label class="check feature-check"><input id="transparent" type="checkbox"><span>透過背景を指示 <small>RGBAのアルファを保持してPNG保存</small></span></label>
+  <div class="sampling-settings">
+    <label>目的別プリセット / Generation preset<select id="quality-preset">
+      <option value="standard">標準 / Standard</option><option value="draft">下書き・速度優先 / Draft</option>
+      <option value="detail">精細仕上げ / Detail</option><option value="faithful">指示重視 / Prompt guidance</option>
+      <option value="negative">ネガティブ活用 / Negative guidance</option><option value="custom">カスタム / Custom</option>
+    </select></label><p id="quality-hint" class="hint">40ステップ・CFG 1。基本の出発点です。</p>
+    <label>サンプリング方式 / Sampling schedule<select id="sampler">
+      <option value="euler">FlowMatch Euler / 標準</option>
+      <option value="euler_karras">FlowMatch Euler / Karras</option>
+      <option value="euler_exponential">FlowMatch Euler / Exponential</option>
+    </select></label><p class="hint">同じEuler法で、生成途中のノイズ量の配分を変更します。</p>
+<div class="slider-field"><div class="slider-heading"><label for="steps-slider">ステップ / Sampling steps</label><input id="steps" aria-label="ステップ / Sampling steps 数値" type="number" min="1" max="80" step="1" value="40"></div><input id="steps-slider" data-range-for="steps" type="range" min="1" max="80" step="1" value="40" aria-label="ステップ / Sampling steps"></div><div class="slider-field"><div class="slider-heading"><label for="cfg-slider">指示の強調 / True CFG</label><input id="cfg" aria-label="指示の強調 / True CFG 数値" type="number" min="1" max="8" step="0.1" value="1"></div><input id="cfg-slider" data-range-for="cfg" type="range" min="1" max="8" step="0.1" value="1" aria-label="指示の強調 / True CFG"></div><p id="cfg-hint" class="hint">CFG 1でも通常の指示は有効です。1より大きくすると指示を強調し、ネガティブも使用します。</p>
+<div class="slider-field"><div class="slider-heading"><label for="count-slider">生成回数 / Batch count</label><input id="count" aria-label="生成回数 / Batch count 数値" type="number" min="1" max="99" step="1" value="1"></div><input id="count-slider" data-range-for="count" type="range" min="1" max="99" step="1" value="1" aria-label="生成回数 / Batch count"></div><div class="slider-field"><div class="slider-heading"><label for="batch-size-slider">同時枚数 / Batch size</label><input id="batch-size" aria-label="同時枚数 / Batch size 数値" type="number" min="1" max="10" step="1" value="1"></div><input id="batch-size-slider" data-range-for="batch-size" type="range" min="1" max="10" step="1" value="1" aria-label="同時枚数 / Batch size"></div><p id="batch-total" class="hint">1回 × 同時1枚 = 合計1枚</p><p class="hint">同時枚数を増やすとVRAM使用量が増えます。メモリ不足なら1に戻してください。</p>
+  </div>
+  <label>GPUプリセット / GPU preset<select id="gpu-preset">
+    <option value="32">RTX 5090 / 32 GB</option>
+    <option value="24">RTX 3090・4090 / 24 GB</option>
+    <option value="16">RTX 4080・5080 / 16 GB</option>
+    <option value="12">RTX 3080 12GB・4070 / 12 GB</option>
+    <option value="8">RTX 3070・3070 Ti / 8 GB（10 GBもこちら）</option>
+    <option value="custom">カスタム / Custom</option>
+  </select></label>
+  <p class="hint">VRAM容量に合わせて選択。各GPUでの実測は未実施。省VRAMでは転送に時間がかかります。 / Presets are not hardware-benchmarked.</p>
+  <details class="advanced"><summary>詳細設定 <span>Seed / VRAM</span></summary>
+    <label>Seed <span class="hint">−1 = ランダム</span><input id="seed" type="number" min="-1" max="4294967295" value="-1"></label>
+    <label>動作プロファイル<select id="profile"><option value="balanced">BF16 / 標準オフロード</option><option value="low_memory">省VRAM ─ 逐次オフロード / 低速</option></select></label>
+    <label>参照画像の処理解像度<select id="reference-resolution"><option value="512">512 ─ 多数の画像・メモリ節約</option><option value="768" selected>768 ─ 編集の初回確認</option><option value="1024">1024 ─ 高精細参照 / 負荷増</option></select></label>
+    <p class="hint">出力サイズとは別の設定です。上流に1024編集の不具合報告があります（Apple環境、NVIDIAでは未確認）。</p>
+    <label class="check"><input id="use-kv-cache" type="checkbox" checked><span>ステップ間のKVキャッシュを使用</span></label>
+    <label class="check"><input id="cache-text" type="checkbox" checked><span>文章エンコードを再利用（生成のみ）</span></label>
+    <div class="button-row"><button id="import-settings" class="secondary">設定JSONを読み込む</button><button id="export-settings" class="secondary">設定を書き出す</button></div>
+    <input id="settings-file" type="file" accept=".json,application/json" hidden>
+  </details>
+  <div class="generate-footer"><button id="generate" class="primary">✦ 画像を生成する</button><p class="hint">Ctrl / ⌘ + Enter でも実行できます</p></div>
+  <div class="maintenance-footer"><button id="unload" class="quiet" title="全ジョブが終了してから利用できます">GPUモデルを解放</button></div>
+</section>
+<section class="workspace" aria-label="結果と進行状況">
+  <div class="workspace-header"><div class="view-tabs"><button class="selected" data-view="preview">プレビュー</button><button data-view="history">履歴</button><button id="mask-tab" data-view="mask" hidden>マスクを描く</button></div><button id="generate-top" class="primary">✦ 画像を生成する</button></div>
+  <div id="preview-view" class="view">
+    <div class="preview-surface checker" id="preview-surface"><div class="empty-state" id="empty-state"><div class="empty-symbol">✦</div><h2>ここから、制作をはじめよう。</h2><p>左で内容を入力し、「画像を生成する」を押してください。<br>編集では参照画像を追加できます。</p><div class="capabilities"><span>TEXT TO IMAGE</span><span>MULTI-IMAGE EDIT</span><span>RGBA</span></div></div><img id="preview-image" alt="生成結果" hidden></div>
+    <div id="result-bar" class="result-bar" hidden><div><strong id="result-size"></strong><small id="result-detail"></small></div><div class="button-row"><button id="send-edit" class="secondary">編集に使う</button><button id="reuse-settings" class="secondary">設定を再利用</button><a id="download-image" class="primary small" download>PNGを保存 ↓</a></div></div>
+    <div id="result-thumbnails" class="result-thumbnails"></div>
+  </div>
+  <div id="mask-view" class="view" hidden>
+    <div class="mask-toolbar"><strong>白い領域を編集</strong><label>ブラシ <input id="brush-size" type="range" min="4" max="120" value="35"></label><button id="eraser" class="secondary" aria-pressed="false">消しゴム</button><button id="clear-mask" class="secondary">クリア</button></div>
+    <div class="mask-surface checker"><p id="mask-empty" class="hint">参照画像1を追加すると、ここに描けます。</p><div id="mask-stack" hidden><img id="mask-base" alt="編集元画像"><canvas id="mask-canvas" aria-label="編集する範囲を白く塗るキャンバス"></canvas></div></div>
+    <p class="hint mask-note">このマスクは参照画像としてAIへ伝えます。専用inpaintingモデルではありません。<br>「マスク外を保持」がON・ぼかし0なら、黒い領域は元のピクセルをそのまま保存します。</p>
+  </div>
+  <div id="history-view" class="view" hidden><div class="history-heading"><h2>これまでの出力</h2><button id="refresh-history" class="secondary">更新</button></div><div id="history-grid" class="history-grid"></div><p class="hint">最新80枚を表示。以前の出力も保存フォルダーに残っています。</p></div>
+  <div class="queue-panel"><div class="queue-heading"><h2>生成キュー</h2><span id="queue-count">0件</span></div><div id="jobs"><p class="queue-empty">ジョブはありません。モデルは最初の生成時に読み込まれます。</p></div></div>
+  <div class="system-strip"><span id="gpu-info">デバイス情報を取得中</span><span id="memory-info"></span><span id="model-status"></span></div>
+  <p class="validation-note">RTX 5090で256px・2ステップの動作確認済み。高解像度では同時枚数を少なくして調整してください。</p>
+</section>
+</main>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+</body></html>

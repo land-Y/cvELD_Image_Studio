@@ -1,0 +1,8 @@
+{
+  "port": 7860,
+  "gpu_index": 0,
+  "open_browser": true,
+  "model_dir": "models/Qwen-Image-2.1",
+  "data_dir": "data",
+  "text_cache_mb": 96
+}

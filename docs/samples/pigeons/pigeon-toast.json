@@ -1,0 +1,22 @@
+{
+  "mode": "generate",
+  "prompt": "可愛いポップな漫画イラスト。公園のベンチの上で、丸く太った鳩の首に四角い食パンが一枚すっぽりはまっている。食パンの中央の穴から鳩の顔が出ており、鳩は目を丸くして頬を赤らめ、両翼を横へ広げて慌てている。足元にはパンくず。右手前にはスマートフォンで鳩を撮影する人の手があり、スマホ画面にも食パンにはまった鳩が映る。全体は白いSNS投稿カードの中のイラストで、下部にハートと吹き出しのアイコン。太い輪郭線、黄色と水色とピンク、シンプルで読みやすい構図。",
+  "negative_prompt": "",
+  "width": 1024,
+  "height": 1024,
+  "steps": 40,
+  "cfg": 1.0,
+  "seed": 37392343,
+  "count": 1,
+  "batch_size": 1,
+  "sampler": "euler",
+  "transparent": false,
+  "references": [],
+  "mask_id": null,
+  "preserve_outside": true,
+  "mask_feather": 0,
+  "reference_resolution": 768,
+  "profile": "balanced",
+  "use_kv_cache": true,
+  "cache_text": true
+}

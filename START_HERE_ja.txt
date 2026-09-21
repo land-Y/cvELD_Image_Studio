@@ -1,0 +1,8 @@
+cvELD Image Studio v0.2.0
+
+1. ZIPをすべてローカルSSDへ展開。
+2. USAGE_AND_SUPPORT.mdとdocs/Manual_ja.htmlを確認。
+3. Run.batを起動。初回の利用条件確認はy/n。
+4. DOS窓を閉じるとツールも終了します。
+
+モデルの利用条件の確認・遵守は利用者の責任です。サポートは可能な範囲で行い、成果の保証・個別補償・クレーム対応は行いません。法令上制限できない責任や権利は除きます。詳細はUSAGE_AND_SUPPORT.md。
