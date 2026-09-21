@@ -1,5 +1,7 @@
 # cvELD Image Studio v0.2.0
 
+![cvELD Image Studio — image generation preview](docs/images/studio-preview.png)
+
 Qwen-Image-2.1向けのローカル画像生成WebUI。Windows 11 x64・NVIDIA CUDA GPUを対象に、テキスト生成、参照画像による編集、マスク指定の部分編集を行えます。 / A local Windows image-generation and editing UI for Qwen-Image-2.1.
 
 ## 起動 / Start
